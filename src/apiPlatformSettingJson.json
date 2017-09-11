@@ -1,0 +1,147 @@
+{
+    "implementation": {
+        "executions": {
+            "request": [
+                "1",
+                "10",
+                "6",
+                "5",
+                "7",
+                "9",
+                "2"
+            ],
+            "response": [
+                "3",
+                "4"
+            ]
+        },
+        "policies": [
+            {
+                "schemaVersion": "1",
+                "draft": false,
+                "id": "1",
+                "type": "o:ApiRequest",
+                "version": "1.0",
+                "config": {
+                    "protocols": [
+                        "HTTP"
+                    ],
+                    "url": "SeoulBus/1"
+                }
+            },
+            {
+                "schemaVersion": "3",
+                "draft": false,
+                "id": "2",
+                "type": "o:ServiceRequest",
+                "version": "1.0",
+                "config": {
+                    "headerConfig": {
+                        "action": "PASS-THROUGH",
+                        "headersToAddOrUpdate": [],
+                        "headersToDrop": []
+                    },
+                    "serviceId": "100"
+                }
+            },
+            {
+                "schemaVersion": "1",
+                "id": "3",
+                "type": "o:ServiceResponse",
+                "version": "1.0",
+                "config": {}
+            },
+            {
+                "schemaVersion": "1",
+                "id": "4",
+                "type": "o:ApiResponse",
+                "version": "1.0",
+                "config": {}
+            },
+            {
+                "schemaVersion": "1",
+                "comments": "",
+                "draft": false,
+                "id": "5",
+                "type": "o:apiRateLimiting",
+                "version": "1.0",
+                "config": {
+                    "conjunction": "ALL",
+                    "action": "REJECT",
+                    "conditions": [
+                        {
+                            "rateLimit": "5",
+                            "interval": "Minute"
+                        }
+                    ]
+                }
+            },
+            {
+                "schemaVersion": "1",
+                "comments": "",
+                "draft": true,
+                "id": "6",
+                "type": "o:ApiThrottlingDelay",
+                "version": "1.0",
+                "config": {
+                    "conditions": [
+                        {
+                            "unitOfInterval": "Second",
+                            "unitOfTime": "Minute",
+                            "thresholdValue": "3",
+                            "operator": ">",
+                            "delayInterval": "3"
+                        }
+                    ]
+                }
+            },
+            {
+                "schemaVersion": "1",
+                "comments": "",
+                "draft": true,
+                "id": "7",
+                "type": "o:IPFilterValidation",
+                "version": "1.0",
+                "config": {
+                    "conjunction": "ANY",
+                    "action": "REJECT",
+                    "conditions": [
+                        {
+                            "ipAddressValue": "10.179.88.202",
+                            "operator": "=",
+                            "ipAddressType": "IPv4"
+                        }
+                    ]
+                }
+            },
+            {
+                "schemaVersion": "1",
+                "comments": "",
+                "draft": false,
+                "id": "9",
+                "type": "o:GroovyScript",
+                "version": "1.0",
+                "config": {
+                    "script": "def queryParameters = context.getServiceRequest().getQueryParams()\ndef length_queryParameters = queryParameters.size()\n\nprintln (\"=======================\")\nprintln (\"getPathInfo : \" + context.getServiceRequest().getPathInfo())\ndef queryParametersKeys = queryParameters.keySet()\nprintln (\"queryParametersKeys : \" + queryParametersKeys)\nprintln (\"queryParameters values : \" + queryParameters.values())\n\nprintln (\"=======================\")\nprintln (\"getQueryString : \" + context.getApiRequest().getPathInfo())\nprintln (\"queryParametersKeys : \" + context.getApiRequest().getQueryParams().keySet())\nprintln (\"queryParametersKeys : \" + context.getApiRequest().getQueryParams().values())\n\ndef param_key = \"serviceKey\"\ndef param_value = \"voxATIOGv2Bk9/tAPktmpZkX1UnYW6XWSdUMdaLvD28MVP7wD55wWdQEa8DWtTB2gbLOMu/zMmMx80fgNqByaw==\"\ndef setparameters = context.getServiceRequest().setQueryParam(param_key, param_value)"
+                }
+            },
+            {
+                "schemaVersion": "1",
+                "comments": "",
+                "draft": false,
+                "id": "10",
+                "type": "o:CORS",
+                "version": "1.0",
+                "config": {
+                    "conditions": [
+                        {
+                            "domains": "*"
+                        }
+                    ]
+                }
+            }
+        ]
+    },
+    "version": "1",
+    "name": "SeoulBus"
+}
